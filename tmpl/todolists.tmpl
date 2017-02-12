@@ -1,0 +1,142 @@
+
+<?js
+    var data = obj;
+	var todolists = [];
+	var dataObj = {};
+String.prototype.hashCode = function(){
+	var hash = 0;
+	if (this.length == 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		char = this.charCodeAt(i);
+		hash = ((hash<<5)-hash)+char;
+		hash = hash & hash; // Convert to 32bit integer
+	}
+	return hash;
+};
+function genIdHash (obj, longname) {
+	var version = obj.type.names[0];
+	var status = obj.defaultvalue;
+	var datetime = obj.name;
+	var desc = obj.description;
+	var combine = version+status+datetime+desc+longname;
+	// var hash = encodeURIComponent(combine);
+	var hash = combine.hashCode() + '';
+	hash = hash.replace(/-/g, '');
+	return hash;
+};
+function getModuleName (obj) {
+	if (obj.memberof) {
+		return obj.memberof;
+	} else {
+		return obj.longname;
+	}
+};
+    var genTodoListsObj_2 = function(objs, type, parentObj) {
+		var ret = [];
+		if (objs && objs.length) {
+			objs.forEach(function (obj) {
+				var version = obj.type.names[0];
+				var status = obj.defaultvalue;
+				var datetime = obj.name;
+				var desc = obj.description;
+				var longname = parentObj.longname;
+				var id = genIdHash(obj, longname);
+				var modulename = getModuleName(parentObj);
+				ret.push({version:version, datetime:datetime, status:status, desc:desc, id:id, module:modulename, longname:longname, type:type});
+			});
+		}
+		return ret;
+	};
+	var getTodoListsObj = function (item) {
+		var obj = [];
+		var todos = item.todo;
+		var fixmes = item.fixme;
+		var longname = item.longname;
+
+		obj = _.union(obj, genTodoListsObj_2(todos, 'todo', item));
+		obj = _.union(obj, genTodoListsObj_2(fixmes, 'fixme', item));
+
+		return obj;
+	};
+	todolists = getTodoListsObj(data);
+	todolists = _.sortBy(todolists, function(tl) {
+	return [tl.datetime, tl.type, tl.version];
+	});
+	var todolistsHas = {};
+	todolistsHas.version = false;
+	todolistsHas.datetime = false;
+	todolistsHas.status = false;
+	todolists.forEach(function(todolist) {
+	    if (!todolist) { return; }
+		if (todolist.version) {
+		    todolistsHas.version = true;
+		}
+		if (todolist.datetime) {
+		    todolistsHas.datetime = true;
+		}
+		if (todolist.status) {
+		    todolistsHas.status = true;
+		}
+	});
+
+?>
+
+
+<table class="params">
+    <thead>
+		<tr>
+			<th>Tag</th>
+
+        <?js if (todolistsHas.status) {?>
+        <th>Status</th>
+        <?js } ?>
+
+		<?js if (todolistsHas.version) {?>
+        <th>Target Version</th>
+        <?js } ?>
+
+		<?js if (todolistsHas.datetime) {?>
+        <th>Date Time</th>
+        <?js } ?>
+
+        <th class="last">Description</th>
+
+    </tr>
+    </thead>
+
+    <tbody>
+    <?js
+        var self = this;
+        todolists.forEach(function(todolist) {
+            if (!todolist) { return; }
+    ?>
+
+        <tr id="<?js= todolist.id ?>">
+
+            <td class="tag"><span class="<?js= todolist.type ?>-tag"><?js= todolist.type.toUpperCase() ?></span></td>
+			
+			<td class="status">
+				<?js if (todolistsHas.status) {?>
+				<span class="status"><?js= todolist.status ?></span>
+				<?js } ?>
+			</td>
+
+            <td class="version target">
+				<?js if (todolistsHas.version) {?>
+				<span class="version"><?js= todolist.version ?></span>
+				<?js } ?>
+			</td>
+
+			<td class="datetime">
+				<?js if (todolistsHas.datetime) {?>
+				<span class="date"><?js= todolist.datetime ?></span>
+				<?js } ?>
+			</td>
+			
+            <td class="description last"><?js= todolist.desc ?></td>
+
+        </tr>
+
+    <?js }); ?>
+    </tbody>
+</table>

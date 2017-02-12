@@ -1,0 +1,125 @@
+
+<?js
+var data = obj;
+String.prototype.hashCode = function(){
+	var hash = 0;
+	if (this.length == 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		char = this.charCodeAt(i);
+		hash = ((hash<<5)-hash)+char;
+		hash = hash & hash; // Convert to 32bit integer
+	}
+	return hash;
+};
+function genIdHash (obj, longname) {
+	var version = obj.type.names[0];
+	var status = obj.defaultvalue;
+	var datetime = obj.name;
+	var desc = obj.description;
+	var combine = version+status+datetime+desc+longname;
+	// var hash = encodeURIComponent(combine);
+	var hash = combine.hashCode() + '';
+	hash = hash.replace(/-/g, '');
+	return hash;
+};
+function getModuleName (obj) {
+	if (obj.memberof) {
+		return obj.memberof;
+	} else {
+		return obj.longname;
+	}
+};
+    var getChangelogsObj = function (parentObj, changelogs) {
+		var obj = [];
+		if (changelogs && changelogs.length) {
+			changelogs.forEach(function (changelog) {
+				var version = changelog.type.names[0];
+				var defaultvalue = changelog.defaultvalue;
+				var datetime = changelog.name;
+				var desc = changelog.description;
+				var longname = parentObj.longname;
+				var modulename = getModuleName(parentObj);
+				var id = genIdHash(changelog, longname);
+				obj.push({version:version, datetime:datetime, status:defaultvalue, desc:desc, id:id, module:modulename, longname:parentObj.longname});
+			});
+		}
+		return obj;
+	};
+var changelogs = getChangelogsObj(data, data.changelog);
+changelogs = _.sortBy(changelogs, function(cl) {
+return [cl.datetime, cl.version, cl.link];
+}).reverse();
+var changelogsHas = {};
+	changelogsHas.version = false;
+	changelogsHas.datetime = false;
+	changelogsHas.status = false;
+	changelogs.forEach(function(changelog) {
+	    if (!changelog) { return; }
+		if (changelog.version) {
+		    changelogsHas.version = true;
+		}
+		if (changelog.datetime) {
+		    changelogsHas.datetime = true;
+		}
+		if (changelog.status) {
+		    changelogsHas.status = true;
+		}
+	});
+?>
+
+
+<table class="params">
+    <thead>
+		<tr>
+			<?js if (changelogsHas.version) {?>
+			<th>Version</th>
+			<?js } ?>
+
+
+			<?js if (changelogsHas.status) {?>
+			<th>Status</th>
+			<?js } ?>
+
+			<?js if (changelogsHas.datetime) {?>
+			<th>Date Time</th>
+			<?js } ?>
+
+			<th class="last">Description</th>
+
+		</tr>
+    </thead>
+
+    <tbody>
+    <?js
+        var self = this;
+        changelogs.forEach(function(changelog) {
+            if (!changelog) { return; }
+    ?>
+
+        <tr id="<?js= changelog.id ?>">
+
+            <td class="version">
+				<?js if (changelogsHas.version) {?>
+				<span class="version"><?js= changelog.version ?></span>
+				<?js } ?>
+			</td>
+			
+			<td class="status">
+				<?js if (changelogsHas.status) {?>
+				<span class="status"><?js= changelog.status ?></span>
+				<?js } ?>
+			</td>
+
+			<td class="datetime">
+				<?js if (changelogsHas.datetime) {?>
+				<span class="date"><?js= changelog.datetime ?></span>
+				<?js } ?>
+			</td>
+			
+            <td class="description last"><?js= changelog.desc ?></td>
+
+        </tr>
+
+    <?js }); ?>
+    </tbody>
+</table>

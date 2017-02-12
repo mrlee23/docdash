@@ -1,0 +1,152 @@
+
+<?js
+var changelogs = obj;
+String.prototype.hashCode = function(){
+	var hash = 0;
+	if (this.length == 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		char = this.charCodeAt(i);
+		hash = ((hash<<5)-hash)+char;
+		hash = hash & hash; // Convert to 32bit integer
+	}
+	return hash;
+};
+function genIdHash (obj) {
+	var version = obj.type.names[0];
+	var status = obj.defaultvalue;
+	var datetime = obj.name;
+	var desc = obj.description;
+	var combine = version+status+datetime+desc;
+	// var hash = encodeURIComponent(combine);
+	var hash = combine.hashCode() + '';
+	return hash.replace(/-/g, '');
+};
+function getModuleName (obj) {
+	if (obj.memberof) {
+		return obj.memberof;
+	} else {
+		return obj.longname;
+	}
+};
+    var getChangelogsObj = function (parentObj, changelogs) {
+		var obj = [];
+		if (changelogs && changelogs.length) {
+			changelogs.forEach(function (changelog) {
+				var version = changelog.type.names[0];
+				var defaultvalue = changelog.defaultvalue;
+				var datetime = changelog.name;
+				var desc = changelog.description;
+				var longname = parentObj.longname;
+				var modulename = getModuleName(parentObj);
+				var id = genIdHash(changelog);
+				obj.push({version:version, datetime:datetime, status:defaultvalue, desc:desc, id:id, module:modulename, longname:parentObj.longname});
+			});
+		}
+		return obj;
+	};
+
+    /* sort subchangelogs under their parent changelogs (like opts.classname) */
+    var parentParam = null;
+    changelogs.forEach(function(param, i) {
+        var paramRegExp;
+
+        if (!param) {
+            return;
+        }
+
+        if (parentParam && parentParam.name && param.name) {
+            paramRegExp = new RegExp('^(?:' + parentParam.name + '(?:\\[\\])*)\\.(.+)$');
+
+            if ( paramRegExp.test(param.name) ) {
+                param.name = RegExp.$1;
+                parentParam.subchangelogs = parentParam.subchangelogs || [];
+                parentParam.subchangelogs.push(param);
+                changelogs[i] = null;
+            }
+            else {
+                parentParam = param;
+            }
+        }
+        else {
+            parentParam = param;
+        }
+    });
+
+    /* determine if we need extra columns, "attributes" and "default" */
+    changelogs.hasAttributes = false;
+    changelogs.hasDefault = false;
+    changelogs.hasName = false;
+
+    changelogs.forEach(function(param) {
+        if (!param) { return; }
+
+        if (param.optional || param.nullable || param.variable) {
+            changelogs.hasAttributes = true;
+        }
+
+        if (param.name) {
+            changelogs.hasName = true;
+        }
+
+        if (typeof param.defaultvalue !== 'undefined') {
+            changelogs.hasDefault = true;
+        }
+    });
+?>
+
+<table class="params">
+    <thead>
+		<tr>
+			<th>Version</th>
+
+        <?js if (changelogs.hasDefault) {?>
+        <th>Status</th>
+        <?js } ?>
+
+		<?js if (changelogs.hasName) {?>
+        <th>Date Time</th>
+        <?js } ?>
+
+        <th class="last">Description</th>
+
+    </tr>
+    </thead>
+
+    <tbody>
+    <?js
+        var self = this;
+        changelogs.forEach(function(changelog) {
+            if (!changelog) { return; }
+    ?>
+
+        <tr>
+
+			<td class="version">
+				<?js if (changelog.type && changelog.type.names) {?>
+				<span class="version"><?js= changelog.type.names ?></span>
+				<?js } ?>
+			</td>
+
+            <?js if (changelogs.hasDefault) {?>
+                <td class="status">
+                <?js if (typeof changelog.defaultvalue !== 'undefined') { ?>
+                    <code><?js= self.htmlsafe(changelog.defaultvalue) ?></code>
+                <?js } ?>
+                </td>
+            <?js } ?>
+
+			
+            <?js if (changelogs.hasName) {?>
+                <td class="date"><span class="date"><?js= changelog.name ?></span></td>
+            <?js } ?>
+
+				<td class="description last"><?js= changelog.description ?><?js if (changelog.subchangelogs) { ?>
+                <h6>Properties</h6>
+                <?js= self.partial('changelogs.tmpl', changelog.subchangelogs) ?>
+				<?js } ?></td>
+
+        </tr>
+
+    <?js }); ?>
+    </tbody>
+</table>
