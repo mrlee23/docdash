@@ -29,7 +29,24 @@ function getModuleName (obj) {
 		return obj.longname;
 	}
 };
-    var getChangelogsObj = function (parentObj, changelogs) {
+var statusOptions = {
+	init : {
+		text: '초기화',
+		ignore: false
+	},
+	closed : {
+		text: '완료',
+		ignore: true
+	},
+	open : {
+		text: '진행중..',
+		ignore: false
+	}
+};
+var convertStatus = function (name) {
+	return (statusOptions[name]) ? statusOptions[name].text : name;
+};
+      var getChangelogsObj = function (parentObj, changelogs) {
 		var obj = [];
 		if (changelogs && changelogs.length) {
 			changelogs.forEach(function (changelog) {
@@ -106,7 +123,7 @@ var changelogsHas = {};
 			
 			<td class="status">
 				<?js if (changelogsHas.status) {?>
-				<span class="status"><?js= changelog.status ?></span>
+				<span class="status-<?js= changelog.status ?> status"><?js= convertStatus(changelog.status) ?></span>
 				<?js } ?>
 			</td>
 

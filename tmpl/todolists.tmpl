@@ -31,7 +31,24 @@ function getModuleName (obj) {
 		return obj.longname;
 	}
 };
-    var genTodoListsObj_2 = function(objs, type, parentObj) {
+var statusOptions = {
+	init : {
+		text: '초기화',
+		ignore: false
+	},
+	closed : {
+		text: '완료',
+		ignore: true
+	},
+	open : {
+		text: '진행중..',
+		ignore: false
+	}
+};
+var convertStatus = function (name) {
+	return (statusOptions[name]) ? statusOptions[name].text : name;
+};
+	var genTodoListsObj_2 = function(objs, type, parentObj) {
 		var ret = [];
 		if (objs && objs.length) {
 			objs.forEach(function (obj) {
@@ -119,7 +136,7 @@ function getModuleName (obj) {
 			
 			<td class="status">
 				<?js if (todolistsHas.status) {?>
-				<span class="status"><?js= todolist.status ?></span>
+				<span class="status-<?js= todolist.status ?> status"><?js= convertStatus(todolist.status) ?></span>
 				<?js } ?>
 			</td>
 

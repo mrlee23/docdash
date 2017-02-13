@@ -345,7 +345,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
 var _ = require('lodash');
 var strftime = require('./strftime.js');
 var timeline_limit = 30;
-function dropToLimit(dataObj) {
+function dropToLimit(dataObj) { // do not added this in tmpl
 	if (timeline_limit > 0) {
 		var limit = _.size(dataObj) - timeline_limit;
 		if (limit > 0) {
@@ -357,8 +357,8 @@ function dropToLimit(dataObj) {
 String.prototype.hashCode = function(){
 	var hash = 0;
 	if (this.length == 0) return hash;
-	for (i = 0; i < this.length; i++) {
-		char = this.charCodeAt(i);
+	for (var i = 0; i < this.length; i++) {
+		var char = this.charCodeAt(i);
 		hash = ((hash<<5)-hash)+char;
 		hash = hash & hash; // Convert to 32bit integer
 	}
@@ -388,6 +388,26 @@ function getModuleName (obj) {
 		}
 		break;
 	}
+};
+var statusOptions = {
+	init : {
+		text: '초기화',
+		ignore: false
+	},
+	closed : {
+		text: '완료',
+		ignore: true
+	},
+	open : {
+		text: '진행중..',
+		ignore: false
+	}
+};
+var convertStatus = function (name) {
+	return (statusOptions[name]) ? statusOptions[name].text : name;
+};
+var ignoreStatus = function (name) { // do not added this in tmpl
+	return (statusOptions[name]) ? statusOptions[name].ignore : false;
 };
 function buildMemberNav_changelog(items, itemHeading, itemsSeen, linktoFn) {
     var nav = '';
@@ -430,10 +450,11 @@ function buildMemberNav_changelog(items, itemHeading, itemsSeen, linktoFn) {
 			var desc = value.desc;
 			var modulename = value.module;
 			var id = value.id;
-			itemsNav += '<li class="changelog">';
-			// itemsNav += linktoFn(link, `<span class="version">${version}</span> <span class="date">${datetime}</span> <span class="status">${status}</span>`);
-			itemsNav += linktoFn(modulename, `<span class="version">${version}</span> <span class="date">${datetime}</span> <span class="status">${status}</span>`, null, id);
-			itemsNav += '</li>';
+			if (!ignoreStatus(status)) {
+				itemsNav += '<li class="changelog">';
+				itemsNav += linktoFn(modulename, `<span class="version">${version}</span> <span class="date">${datetime}</span> <span class="status-${status} status">${convertStatus(status)}</span>`, null, id);
+				itemsNav += '</li>';
+			}
 		});
 
         if (itemsNav !== '') {
@@ -498,10 +519,11 @@ function buildMemberNav_todolists(items, itemHeading, itemsSeen, linktoFn) {
 			var desc = value.desc;
 			var id = value.id;
 			var modulename = value.module;
-			itemsNav += '<li class="todolist">';
-			// itemsNav += linktoFn(link, `<span class="${type}-tag">${type.toUpperCase()}</span> <span class="version">${version}</span> <span class="status">${status}</span>`);
-			itemsNav += linktoFn(modulename, `<span class="${type}-tag">${type.toUpperCase()}</span> <span class="version">${version}</span> <span class="status">${status}</span>`, null, id);
-			itemsNav += '</li>';
+			if (!ignoreStatus(status)) {
+				itemsNav += '<li class="todolist">';
+				itemsNav += linktoFn(modulename, `<span class="${type}-tag">${type.toUpperCase()}</span> <span class="version">${version}</span> <span class="status-${status} status">${convertStatus(status)}</span>`, null, id);
+				itemsNav += '</li>';
+			}
 
 		});
 
