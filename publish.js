@@ -344,7 +344,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
 
 var _ = require('lodash');
 var strftime = require('./strftime.js');
-var timeline_limit = 100;
+var timeline_limit = 30;
 function dropToLimit(dataObj) {
 	if (timeline_limit > 0) {
 		var limit = _.size(dataObj) - timeline_limit;
@@ -467,10 +467,12 @@ function buildMemberNav_todolists(items, itemHeading, itemsSeen, linktoFn) {
 		var obj = [];
 		var todos = item.todo;
 		var fixmes = item.fixme;
+		var dones = item.done;
 		var longname = item.longname;
 
 		obj = _.union(obj, genTodoListsObj_2(todos, 'todo', item));
 		obj = _.union(obj, genTodoListsObj_2(fixmes, 'fixme', item));
+		obj = _.union(obj, genTodoListsObj_2(dones, 'done', item));
 
 		return obj;
 	};

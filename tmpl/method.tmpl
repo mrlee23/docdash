@@ -105,7 +105,7 @@ var self = this;
     <?js });
 } } ?>
 
-<?js if (data.todo || data.fixme) { ;?>
+<?js if (data.todo || data.fixme || data.done) { ;?>
     <h5>Todo Lists:</h5>
 	<?js= this.partial('todolists.tmpl', data) ?>
 <?js } ?>

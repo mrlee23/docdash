@@ -691,6 +691,12 @@ span.fixme-tag {
     padding: 1px 5px;
     border-radius: 3px;
 }
+span.done-tag {
+    background-color: rgb(88, 90, 255);
+    color: rgb(211, 211, 241);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
 /* changelogs nav */
 ul li.label {
 	font-size:13px;

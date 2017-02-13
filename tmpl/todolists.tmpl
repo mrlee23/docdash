@@ -51,10 +51,12 @@ function getModuleName (obj) {
 		var obj = [];
 		var todos = item.todo;
 		var fixmes = item.fixme;
+		var dones = item.done;
 		var longname = item.longname;
 
 		obj = _.union(obj, genTodoListsObj_2(todos, 'todo', item));
 		obj = _.union(obj, genTodoListsObj_2(fixmes, 'fixme', item));
+		obj = _.union(obj, genTodoListsObj_2(dones, 'done', item));
 
 		return obj;
 	};

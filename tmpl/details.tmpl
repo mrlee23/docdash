@@ -153,6 +153,16 @@ if (data.defaultvalue && (data.defaultvaluetype === 'object' || data.defaultvalu
         <?js }); ?></ul>
     </dd>
     <?js } ?>
+
+    <?js if (data.done && done.length) {?>
+    <dt class="tag-done">Done:</dt>
+    <dd class="tag-done">
+        <ul><?js done.forEach(function(t) { ?>
+            <li><span class="done-tag"><?js= t.description ?></span></li>
+        <?js }); ?></ul>
+    </dd>
+    <?js } ?>
+
 </dl>
 
 <?js
