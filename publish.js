@@ -390,10 +390,24 @@ function getModuleName (obj) {
 	}
 };
 var statusOptions = {
+	// for changelog
 	init : {
 		text: '초기화',
 		ignore: false
 	},
+	added : {
+		text: '추가됨',
+		ignore: false
+	},
+	modified : {
+		text: '변경됨',
+		ignore: false
+	},
+	removed : {
+		text: '삭제됨',
+		ignore: false
+	},
+	// for todolists
 	closed : {
 		text: '완료',
 		ignore: true
@@ -404,10 +418,10 @@ var statusOptions = {
 	}
 };
 var convertStatus = function (name) {
-	return (statusOptions[name]) ? statusOptions[name].text : name;
+	return (statusOptions[name.toLowerCase()]) ? statusOptions[name].text : name;
 };
 var ignoreStatus = function (name) { // do not added this in tmpl
-	return (statusOptions[name]) ? statusOptions[name].ignore : false;
+	return (statusOptions[name.toLowerCase()]) ? statusOptions[name].ignore : false;
 };
 function buildMemberNav_changelog(items, itemHeading, itemsSeen, linktoFn) {
     var nav = '';
