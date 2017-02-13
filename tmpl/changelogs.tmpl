@@ -111,11 +111,11 @@ var changelogsHas = {};
 			<th>Status</th>
 			<?js } ?>
 
-			<?js if (changelogsHas.datetime) {?>
-			<th>Date Time</th>
-			<?js } ?>
+			<th>Description</th>
 
-			<th class="last">Description</th>
+			<?js if (changelogsHas.datetime) {?>
+			<th class="last">Date Time</th>
+			<?js } ?>
 
 		</tr>
     </thead>
@@ -141,14 +141,14 @@ var changelogsHas = {};
 				<?js } ?>
 			</td>
 
-			<td class="datetime">
+			<td class="description"><?js= changelog.desc ?></td>
+
+			<td class="datetime last">
 				<?js if (changelogsHas.datetime) {?>
 				<span class="date"><?js= changelog.datetime ?></span>
 				<?js } ?>
 			</td>
 			
-            <td class="description last"><?js= changelog.desc ?></td>
-
         </tr>
 
     <?js }); ?>

@@ -1,0 +1,27 @@
+.nav-search {
+	margin-top: 30px;
+	position: relative;
+}
+.nav-search input {
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    border-bottom: 2px solid rgb(197, 197, 197);
+    font-size: 15px;
+    padding: 0 0 10px;
+    text-indent: 30px;
+	color: rgb(133, 133, 133);
+    width: 100%;
+}
+.nav-search input:focus {
+	border-bottom-color: rgb(133, 133, 133);
+	outline: none;
+}
+.nav-search .fa-search {
+	color: rgb(151, 151, 151);
+    font-size: 15px;
+    left: 7px;
+    position: absolute;
+    top: 3px;
+}

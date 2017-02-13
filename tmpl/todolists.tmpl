@@ -128,11 +128,11 @@ var convertStatus = function (name) {
         <th>Target Version</th>
         <?js } ?>
 
-		<?js if (todolistsHas.datetime) {?>
-        <th>Date Time</th>
-        <?js } ?>
+        <th>Description</th>
 
-        <th class="last">Description</th>
+		<?js if (todolistsHas.datetime) {?>
+        <th class="last">Date Time</th>
+        <?js } ?>
 
     </tr>
     </thead>
@@ -160,13 +160,13 @@ var convertStatus = function (name) {
 				<?js } ?>
 			</td>
 
-			<td class="datetime">
+            <td class="description"><?js= todolist.desc ?></td>
+
+			<td class="datetime last">
 				<?js if (todolistsHas.datetime) {?>
 				<span class="date"><?js= todolist.datetime ?></span>
 				<?js } ?>
 			</td>
-			
-            <td class="description last"><?js= todolist.desc ?></td>
 
         </tr>
 

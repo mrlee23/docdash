@@ -1,0 +1,16 @@
+.fade-in {
+	opacity: 1;
+	height: 100%;
+	transition: all 0.3s ease;
+}
+.fade-out {
+	opacity: 0;
+	height: 0px;
+	transition: all 0.3s ease;
+}
+.highlight {
+	border-bottom: 2px solid rgb(255, 225, 55);
+}
+.highlight-bg {
+	background-color:rgb(255, 225, 55);
+}
