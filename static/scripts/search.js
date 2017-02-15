@@ -18,7 +18,7 @@ function search(str, obj) {
 
 	var highlightOut = function (jq) {
 		if (jq.children('a').children('span.highlight').length) {
-			jq.children('a').children('span.highlight').parent().html(jq.children('a').children('span.highlight').text());
+			jq.children('a').children('span.highlight').parent().html(jq.children('a').children('span.highlight').html());
 		}
 	};
 

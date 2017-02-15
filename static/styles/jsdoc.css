@@ -227,6 +227,7 @@ nav ul ul a:active {
 nav h2 {
    font-size: 12px;
    margin: 0;
+   margin-top: 75px;
    padding: 0;
 }
 
@@ -734,4 +735,13 @@ ul li ul.changelogs li.changelog {
 }
 ul.member li ul.changelogs li.changelog a {
 	padding-left: 30px;
+}
+td.version {
+	min-width: 100px;
+}
+td.status {
+	min-width: 100px;
+}
+td.datetime {
+	min-width: 210px;
 }

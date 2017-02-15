@@ -4,6 +4,7 @@
 	transition: all 0.3s ease;
 }
 .fade-out {
+	display: none;
 	opacity: 0;
 	height: 0px;
 	transition: all 0.3s ease;
