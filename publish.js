@@ -344,10 +344,13 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
 
 var _ = require('lodash');
 var strftime = require('./strftime.js');
-var timeline_limit = 30;
-function dropToLimit(dataObj) { // do not added this in tmpl
-	if (timeline_limit > 0) {
-		var limit = _.size(dataObj) - timeline_limit;
+var timeline_limit = {
+	changelog: 20,
+	todolists: 10
+};
+function dropToLimit(dataObj, type) { // do not added this in tmpl
+	if (timeline_limit[type] > 0) {
+		var limit = _.size(dataObj) - timeline_limit[type];
 		if (limit > 0) {
 			dataObj = _.dropRight(dataObj, limit);
 		}
@@ -462,7 +465,7 @@ function buildMemberNav_changelog(items, itemHeading, itemsSeen, linktoFn) {
 			dataObj = _.union(dataObj, tmpObj);
         });
 		dataObj = _.reverse(_.sortBy(dataObj, ['datetime', 'version', 'link']));
-		dataObj = dropToLimit(dataObj);
+		dataObj = dropToLimit(dataObj, 'changelog');
 
 		_.forEach(dataObj, function (value, key) {
 			var version = value.version;
@@ -530,7 +533,7 @@ function buildMemberNav_todolists(items, itemHeading, itemsSeen, linktoFn) {
 			dataObj = _.union(dataObj, tmpObj);
         });
 		dataObj = _.sortBy(dataObj, ['datetime', 'type', 'version']);
-		dataObj = dropToLimit(dataObj);
+		dataObj = dropToLimit(dataObj, 'todolists');
 		
 		_.forEach(dataObj, function (value, key) {
 			var version = value.version;
@@ -586,8 +589,6 @@ function buildNav(members) {
     var seen = {};
     var seenTutorials = {};
 
-	nav += buildMemberNav_changelog(members.changelogs, 'Changelogs', {}, linkto); // custom nav
-	nav += buildMemberNav_todolists(members.todolists, 'Todo Lists', {}, linkto); // custom nav
     nav += buildMemberNav(members.classes, 'Classes', seen, linkto);
     nav += buildMemberNav(members.modules, 'Modules', {}, linkto);
     nav += buildMemberNav(members.externals, 'Externals', seen, linktoExternal);
@@ -596,6 +597,8 @@ function buildNav(members) {
     nav += buildMemberNav(members.mixins, 'Mixins', seen, linkto);
     nav += buildMemberNav(members.tutorials, 'Tutorials', seenTutorials, linktoTutorial);
     nav += buildMemberNav(members.interfaces, 'Interfaces', seen, linkto);
+	nav += buildMemberNav_todolists(members.todolists, 'Todo Lists', {}, linkto); // custom nav
+	nav += buildMemberNav_changelog(members.changelogs, 'Changelogs', {}, linkto); // custom nav
 
     if (members.globals.length) {
         var globalNav = '';
@@ -804,6 +807,10 @@ exports.publish = function(taffyData, opts, tutorials) {
     view.tutoriallink = tutoriallink;
     view.htmlsafe = htmlsafe;
     view.outputSourceFiles = outputSourceFiles;
+	view.members = members; // custom setting
+	view.lodash = require('lodash'); // custom setting
+	view.current = {}; // custom setting
+	view.flag = {}; // custom setting
 
     // once for all
     view.nav = buildNav(members);
@@ -838,7 +845,7 @@ exports.publish = function(taffyData, opts, tutorials) {
     var mixins = taffy(members.mixins);
     var externals = taffy(members.externals);
     var interfaces = taffy(members.interfaces);
-
+	
     Object.keys(helper.longnameToUrl).forEach(function(longname) {
         var myModules = helper.find(modules, {longname: longname});
         if (myModules.length) {
