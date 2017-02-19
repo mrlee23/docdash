@@ -4,38 +4,15 @@
 	var module = self.current.module;
     data.forEach(function(name, i) {
 	var type = '';
-	if (name.indexOf('<') < name.indexOf('>')) {
-		dot = name.indexOf('.');
-		lb = name.indexOf('<');
-		rb = name.indexOf('>');
-		var dotname = name.substr(0, dot);
-		var dotlongname = dotname;
-		var dotObj = self.find({name: dotname})[0];
-		if (dotObj) {
-			dotlongname = dotObj.longname;
-		}
-		type += self.linkto(dotlongname, self.htmlsafe(dotname)) + '.';
-		var tmp = name.substr(lb+1, rb-lb-1);
-		var tmp2 = tmp.split(',').map(
-			function (x) {
-				var curname = x.trim();
-				var findObj = self.find({name: curname})[0];
-				if (findObj) {
-					longname = findObj.longname;
-				} else {
-					longname = curname;
-				}
-				return self.linkto(longname, self.htmlsafe(curname));
-			});
-		type += '<' + tmp2.join(', ') + '>';
-	} else {
+	type = name.replace(/[a-zA-Z_]*/g, function (str) {
+		var name = str;
 		var longname = name;
 		var findObj = self.find({name: name})[0];
 		if (findObj) {
 			longname = findObj.longname;
 		}
-		type = self.linkto(longname, self.htmlsafe(name));
-	}
+		return self.linkto(longname, self.htmlsafe(name));
+	});
 	?>
 <span class="param-type"><?js= type ?></span>
 <?js if (i < data.length-1) { ?>|<?js } ?>
