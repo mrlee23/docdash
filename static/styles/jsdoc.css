@@ -130,6 +130,7 @@ tt, code, kbd, samp {
   float: right;
   min-width: 360px;
   width: calc(100% - 240px);
+  overflow-x: auto;z
 }
 
 header {
@@ -710,9 +711,19 @@ span.status {
 	color: rgb(70,70,70);
 }
 span.status-init {
-    background-color: rgb(165, 247, 220);
-    color: rgb(49, 76, 67);
-    border-right: 3px solid rgb(75, 113, 100);
+	background-color: rgb(154, 222, 255);
+    color: rgb(7, 102, 148);
+    border-right: 3px solid rgb(7, 102, 148);
+}
+span.status-added {
+	background-color: rgb(243, 243, 109);
+    border-right: 3px solid rgb(97, 97, 40);
+    color: rgb(97, 97, 40);
+}
+span.status-modified {
+	background-color: rgb(255, 140, 251);
+    border-right: 3px solid rgb(109, 14, 106);
+    color: rgb(109, 14, 106);
 }
 span.status-open {
     background-color: rgb(255, 77, 77);
@@ -723,6 +734,16 @@ span.status-closed {
     background-color: rgb(77, 82, 255);
     color: rgb(232, 232, 253);
     border-right: 3px solid rgb(181, 187, 255);
+}
+span.status-deprecated {
+	background-color: rgb(191, 23, 23);
+    border-right: 3px solid rgb(216, 155, 155);
+    color: rgb(232, 168, 168);
+}
+span.status-removed, span.status-obsolete {
+	background-color: rgb(123, 19, 19);
+    border-right: 3px solid rgb(230, 175, 175);
+    color: rgb(230, 175, 175);
 }
 /* changelogs nav */
 ul li.label {
