@@ -456,7 +456,7 @@ footer {
    padding-bottom: 0;
 }
 
-span.param-type, .params td .param-type, .param-type dd {
+span.param-type, .params td .param-type, .param-type dd, .param-type a {
 	color: rgb(171, 9, 175);
 	font-style: italic;
   font-family: Consolas, Monaco, 'Andale Mono', monospace
