@@ -288,6 +288,22 @@ function attachModuleSymbols(doclets, modules) {
 }
 
 function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
+	var scopeChar = function (obj) {
+		switch(obj.scope) {
+		case 'instance':
+			return '#';
+			break;
+		case 'static':
+			return '.';
+			break;
+		case 'inner':
+			return '~';
+			break;
+		default:
+			return '';
+			break;
+		}
+	}
     var nav = '';
 
     if (items && items.length) {
@@ -296,6 +312,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
         items.forEach(function(item) {
             var methods = find({kind:'function', memberof: item.longname});
             var members = find({kind:'member', memberof: item.longname});
+            var typedefs = find({kind:'typedef', memberof: item.longname});
             var docdash = env && env.conf && env.conf.docdash || {};
 
             if ( !hasOwnProp.call(item, 'longname') ) {
@@ -310,7 +327,9 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
                     members.forEach(function (member) {
                         if (!member.scope === 'static') return;
                         itemsNav += "<li data-type='member'>";
-                        itemsNav += linkto(member.longname, member.name);
+						itemsNav += scopeChar(member);
+                        itemsNav += linkto(member.longname,
+										   scopeChar(member) + member.name);
                         itemsNav += "</li>";
                     });
 
@@ -322,12 +341,26 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
 
                     methods.forEach(function (method) {
                         itemsNav += "<li data-type='method'>";
-                        itemsNav += linkto(method.longname, method.name);
+                        itemsNav += linkto(method.longname,
+										   scopeChar(method) + method.name);
                         itemsNav += "</li>";
                     });
 
                     itemsNav += "</ul>";
                 }
+
+				if (typedefs.length) {
+                    itemsNav += "<ul class='typedefs'>";
+
+                    typedefs.forEach(function (typedef) {
+                        itemsNav += "<li data-type='typedef'>";
+                        itemsNav += linkto(typedef.longname,
+										   scopeChar(typedef) + typedef.name);
+                        itemsNav += "</li>";
+                    });
+
+                    itemsNav += "</ul>";
+				}
 
                 itemsNav += '</li>';
                 itemsSeen[item.longname] = true;

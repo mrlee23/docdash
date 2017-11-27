@@ -7,6 +7,7 @@
 html, body {
   height: 100%;
   width: 100%;
+  tab-size: 4;
 }
 
 body {
@@ -765,4 +766,7 @@ td.status {
 }
 td.datetime {
 	min-width: 210px;
+}
+ul.typedefs {
+	font-style: italic;
 }
