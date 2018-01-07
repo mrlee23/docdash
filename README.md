@@ -1,4 +1,10 @@
-# Docdash(수정된 버전)
+# Docdash(Modified, 수정된 버전)
+
+## NOTICE
+This source is customized for my environment.
+If you want to see a original package, go to [here](https://github.com/clenemt/docdash)
+
+
 [![npm package](https://img.shields.io/npm/v/docdash.svg)](https://www.npmjs.com/package/docdash) [![license](https://img.shields.io/npm/l/docdash.svg)](LICENSE.md)
 
 A clean, responsive documentation template theme for JSDoc 3.
